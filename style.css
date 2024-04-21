@@ -33,6 +33,7 @@ body {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
     border-radius: 10px; /* Bordes redondeados */
     background-color: #1a1a1a; /* Fondo negro para las tarjetas */
+    margin-bottom: 30px; /* Espacio inferior para separación */
 }
 
 .card-title {
