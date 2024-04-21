@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactanos</title>
+</head>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          
+          <!-- Marca -->
+          <a class="navbar-brand" href="#">PC MarketPlace</a>
+          
+          <!-- Ícono de Hamburguesa -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+      
+          <!-- Carrito de Compras -->
+          <div class="order-lg-2"> <!-- Mantiene el carrito al final -->
+            <a class="nav-link" href="carrito.html"><i class="fas fa-shopping-cart" style="color: black;"></i></a>
+          </div>
+      
+          <!-- Contenido del Navbar -->
+          <div class="collapse navbar-collapse justify-content-center order-lg-1" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="index.html">Inicio</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Productos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="VistaSoftware.html">Software</a>
+                    <a class="dropdown-item" href="VistaPC.html">PC</a>
+                </div>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="nosotros.html">Nosotros</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="contactanos.html">Contactanos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+</head>
+
+<div class="container pt-4">
+    <div class="card">
+        <div class="card-header">Formulario de Contacto</div>
+        <div class="card-body">
+            <form action="https://pgy-api.vercel.app/api/formulario" enctype="multipart/form-data" autocomplete="on" method="post" class="container">
+                <!-- Nombre: Campo obligatorio -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+
+                <!-- Correo electrónico: Campo obligatorio y con formato de correo -->
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" name="correo" placeholder="name@example.com" required>
+                </div>
+
+                <!-- Número de teléfono: Puede ser obligatorio, pero sin restricciones fuertes -->
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="(12) 3456-7890">
+                </div>
+
+                <!-- Mensaje: Campo obligatorio -->
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                </div>
+
+                <!-- Botones para enviar y restablecer -->
+                <div class="d-flex" style="gap: 16px;">
+                    <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                    <button type="reset" class="btn btn-danger w-100">Restablecer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="footer bg-light text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <h4 class="text-uppercase mb-4">Enlaces</h4>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="index.html" class="text-muted">Inicio</a></li>
+                    
+                    <li class="list-inline-item"><a href="nosotros.html" class="text-muted">Nosotros</a></li>
+                    <!-- Agrega más enlaces según sea necesario -->
+                </ul>
+            </div>
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <h4 class="text-uppercase mb-4">Redes Sociales</h4>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-instagram"></i></a></li>
+                    <!-- Agrega más enlaces a tus redes sociales -->
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h4 class="text-uppercase mb-4">Contacto</h4>
+                <p class="lead mb-0">
+                    Dirección: Duoc sede SedeMaipu, Maipu, Chile<br>
+                    Teléfono: (56) 978310482<br>
+                    Email: emm.cordero@duocuc.cl
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
