@@ -12,8 +12,11 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
           
-          <!-- Marca -->
-          <a class="navbar-brand" href="#">PC MarketPlace</a>
+          <!-- Logo y Marca -->
+          <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="img/goofyCat_upscaled.png" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
+          <span>PC MarketPlace</span>
+          </a>
           
           <!-- Ícono de Hamburguesa -->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,8 +88,29 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">Resumen del Pedido</h5>
                         <p class="card-text">Total: $110.00</p>
-                        <a href="#" class="btn btn-primary">Finalizar Compra</a> <!-- Botón para completar la compra -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Finalizar Compra</button> <!-- Botón para abrir el modal -->
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Compra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas realizar la compra de estos productos?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -99,7 +123,6 @@
                     <h4 class="text-uppercase mb-4">Enlaces</h4>
                     <ul class="list-inline">
                         <li class="list-inline-item"><a href="index.html" class="text-muted">Inicio</a></li>
-                        
                         <li class="list-inline-item"><a href="nosotros.html" class="text-muted">Nosotros</a></li>
                     </ul>
                 </div>
@@ -108,7 +131,7 @@
                     <h4 class="text-uppercase mb-4">Redes Sociales</h4>
                     <ul class="list-inline">
                         <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a></li>
-                        <li class="list-inline-item"><a href="#" con la text-muted"><i class="fab fa-twitter"></i></a></li>
+                        <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-twitter"></i></a></li>
                         <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-instagram"></i></a></li>
                     </ul>
                 </div>
