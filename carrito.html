@@ -11,46 +11,42 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-          
-          <!-- Logo y Marca -->
-          <a class="navbar-brand d-flex align-items-center" href="#">
-          <img src="img/goofyCat_upscaled.png" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
-          <span>PC MarketPlace</span>
-          </a>
-          
-          <!-- Ícono de Hamburguesa -->
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-      
-          <!-- Carrito de Compras -->
-          <div class="order-lg-2"> <!-- Mantiene el carrito al final -->
-            <a class="nav-link" href="carrito.html"><i class="fas fa-shopping-cart" style="color: black;"></i></a>
-          </div>
-      
-          <!-- Contenido del Navbar -->
-          <div class="collapse navbar-collapse justify-content-center order-lg-1" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item active">
-                <a class="nav-link" href="index.html">Inicio</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Productos
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="VistaSoftware.html">Software</a>
-                    <a class="dropdown-item" href="VistaPC.html">PC</a>
-                </div>
-            </li>
-              <li class="nav-item">
-                <a class="nav-link" href="nosotros.html">Nosotros</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="contactanos.html">Contactanos</a>
-              </li>
-            </ul>
-          </div>
+            <!-- Logo y Marca -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="img/goofyCat_upscaled.png" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                <span>PC MarketPlace</span>
+            </a>
+            <!-- Ícono de Hamburguesa -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Carrito de Compras -->
+            <div class="order-lg-2"> <!-- Mantiene el carrito al final -->
+                <a class="nav-link" href="carrito.html"><i class="fas fa-shopping-cart" style="color: black;"></i></a>
+            </div>
+            <!-- Contenido del Navbar -->
+            <div class="collapse navbar-collapse justify-content-center order-lg-1" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Productos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="VistaSoftware.html">Software</a>
+                            <a class="dropdown-item" href="VistaPC.html">PC</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="nosotros.html">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contactanos.html">Contactanos</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -87,7 +83,7 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <h5 class="card-title">Resumen del Pedido</h5>
-                        <p class="card-text">Total: $110.00</p>
+                        <p class="card-text" id="total">Total: $110.00</p>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Finalizar Compra</button> <!-- Botón para abrir el modal -->
                     </div>
                 </div>
@@ -110,7 +106,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Confirmar</button>
+                    <button type="button" class="btn btn-primary" id="confirmPurchase">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -149,6 +145,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="scripts/ValidacionCompra.js"></script>
 </body>
 </html>
-
