@@ -1,0 +1,118 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Mi Carrito{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Mi Carrito de Compras</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th>Acciones</th>  <!-- Columna para el botón de eliminar -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.precio }}</td>
+                <td>${{ item.subtotal }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm btn-eliminar-producto" data-id="{{ item.id }}">Eliminar</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No hay productos en el carrito.</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="text-right"><strong>Total</strong></td>
+                <td>${{ total }}</td>
+                <td></td>  <!-- Ajustar las columnas para mantener la estructura -->
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-success" id="confirmPurchase">Finalizar Compra</button>
+</div>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Compra</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas realizar la compra de estos productos?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmPurchaseBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // Función para eliminar un producto del carrito
+    function eliminarProducto(id) {
+        fetch(`/eliminar-del-carrito/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                Swal.fire('Producto eliminado del carrito', '', 'success');
+                window.location.reload();
+            } else {
+                Swal.fire('Error al eliminar el producto del carrito', '', 'error');
+            }
+        });
+    }
+
+    // Event listener para botones de eliminar producto
+    document.querySelectorAll('.btn-eliminar-producto').forEach(button => {
+        button.addEventListener('click', () => {
+            const productoId = button.getAttribute('data-id');
+            eliminarProducto(productoId); // Asegúrate de que productoId no sea undefined
+        });
+    });
+
+    // Event listener para el botón de confirmar compra
+    document.getElementById('confirmPurchaseBtn').addEventListener('click', () => {
+        $('#confirmModal').modal('hide');
+        Swal.fire('Compra realizada con éxito', '', 'success');
+
+        // Realizar la solicitud POST para finalizar la compra
+        fetch('/finalizar-compra/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirigir a la página principal después de la compra exitosa
+                window.location.href = "{% url 'index' %}";
+            } else {
+                Swal.fire('Error al finalizar la compra', '', 'error');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

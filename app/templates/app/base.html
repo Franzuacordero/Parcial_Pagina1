@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PC MarketPlace{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{% static 'app/img/goofyCat_upscaled.png' %}" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                <span>PC MarketPlace</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Productos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'VistaSoftware' %}">Software</a></li>
+                            <li><a class="dropdown-item" href="{% url 'VistaPC' %}">PC</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contactanos' %}">Contactanos</a>
+                    </li>
+                    {% if perms.app.view_pc %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_pc' %}">Listado PC</a>
+                    </li>
+                    {% endif %}
+                    {% if perms.app.add_pc %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'agregar_PC' %}">Agregar PC</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'agregar_software' %}">Agregar software</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_software' %}">Listar software</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link" style="padding: 0; border: none; background: none;">Cerrar sesión</button>
+                        </form>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">@{{ user.username }}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'registro' %}">Registrate</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ver_carrito' %}">
+                            <i class="fas fa-shopping-cart" style="color: black;"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="footer bg-light text-center mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Enlaces</h4>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="{% url 'index' %}" class="text-muted">Inicio</a></li>
+                        <li class="list-inline-item"><a href="{% url 'nosotros' %}" class="text-muted">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Redes Sociales</h4>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a></li>
+                        <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-twitter"></i></a></li>
+                        <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">Contacto</h4>
+                    <p class="lead mb-0">
+                        Dirección: DuocUC Sede Maipú, Maipú, Chile<br>
+                        Teléfono: (56) 978310482<br>
+                        Email: emm.cordero@duocuc.cl
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                Swal.fire({
+                    "title": "Felicitaciones",
+                    "text": "{{ message }}",
+                    "icon": "success"
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    {% block js %}
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmPurchaseBtn = document.getElementById('confirmPurchaseBtn');
+        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    
+        confirmPurchaseBtn.addEventListener('click', function() {
+            confirmModal.hide();
+            Swal.fire('Compra realizada con éxito', '', 'success');
+    
+            // Realizar la solicitud POST para finalizar la compra
+            fetch('/finalizar-compra/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirigir a la página principal u otra página después de la compra
+                    window.location.href = "{% url 'index' %}";
+                } else {
+                    Swal.fire('Error al finalizar la compra', '', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error al finalizar la compra:', error);
+                Swal.fire('Error al finalizar la compra', '', 'error');
+            });
+        });
+    });
+    {% endblock %}
+</body>
+</html>

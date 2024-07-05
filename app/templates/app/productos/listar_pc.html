@@ -1,0 +1,71 @@
+{% extends 'app/base.html' %}
+
+{% block js %}
+<script>
+    function eliminarPC(id){
+       Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer",
+            icon: "question",
+            showCancelButton: true,
+            cancelButtonText: "No, Cancelar",
+            confirmButtonText: "Sí, eliminar",
+            confirmButtonColor: "darkred"
+       }).then(function(result){
+            if(result.isConfirmed){
+                window.location.href = "/eliminar-pc/" + id + "/";
+            }
+       });
+    }
+</script>
+{% endblock %}
+
+{% block title %}Listado de PCs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Listado de PCs</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Procesador</th>
+                <th>Tarjeta Gráfica</th>
+                <th>Placa Base</th>
+                <th>RAM</th>
+                <th>Almacenamiento</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pc in pcs %}
+            <tr>
+                <td>{{ pc.nombre }}</td>
+                <td>{{ pc.procesador }}</td>
+                <td>{{ pc.tarjeta_grafica }}</td>
+                <td>{{ pc.placa_base }}</td>
+                <td>{{ pc.ram }}</td>
+                <td>{{ pc.almacenamiento }}</td>
+                <td>{{ pc.descripcion }}</td>
+                <td>${{ pc.precio }}</td>
+                <td>
+                    {% if perms.app.change_pc %}
+                    <a href="{% url 'modificar_pc' pc.id %}" class="btn btn-info btn-sm">Modificar</a>
+                    {% endif %}
+                    {% if perms.app.delete_pc %}
+                    <a href="#" onclick="eliminarPC({{ pc.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                    {% endif %}
+                    <a href="{% url 'agregar_al_carrito' 'pc' pc.id %}" class="btn btn-primary btn-sm">Agregar al Carrito</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9">No hay PCs registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

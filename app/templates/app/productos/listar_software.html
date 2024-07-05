@@ -1,0 +1,84 @@
+{% extends 'app/base.html' %}
+
+{% block js %}
+<script>
+    function eliminarSoftware(id){
+       Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer",
+            icon: "question",
+            showCancelButton: true,
+            cancelButtonText: "No, Cancelar",
+            confirmButtonText: "Sí, eliminar",
+            confirmButtonColor: "darkred"
+       }).then(function(result){
+            if(result.isConfirmed){
+                window.location.href = "/eliminar-software/" + id + "/";
+            }
+       });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.btn-agregar-carrito').forEach(button => {
+            button.addEventListener('click', () => {
+                const softwareId = button.getAttribute('data-id');
+                const url = `/agregar-al-carrito/Software/${softwareId}/`;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire('Agregado al carrito', '', 'success');
+                    } else {
+                        Swal.fire('Error al agregar al carrito', '', 'error');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block title %}Listado de Software{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Listado de Software</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for software_item in software_list %}
+            <tr>
+                <td>{{ software_item.nombre }}</td>
+                <td>{{ software_item.descripcion }}</td>
+                <td>${{ software_item.precio }}</td>
+                <td>
+                    {% if perms.app.change_software %}
+                    <a href="{% url 'modificar_software' software_item.id %}" class="btn btn-info btn-sm">Modificar</a>
+                    {% endif %}
+                    {% if perms.app.delete_software %}
+                    <a href="#" onclick="eliminarSoftware({{ software_item.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                    {% endif %}
+                    <button class="btn btn-success btn-sm btn-agregar-carrito" data-id="{{ software_item.id }}">Agregar al Carrito</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay Software registrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

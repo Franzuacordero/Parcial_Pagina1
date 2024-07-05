@@ -1,0 +1,107 @@
+
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'mi_app/scripts/carrito.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block title %}locura{% endblock %}
+
+{% block content %}
+<section id="carouselSection">
+    <div class="container-fluid p-0"> <!-- Asegura que el carrusel ocupe todo el ancho -->
+        <div id="carouselExample" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner"> <!-- La sección principal del carrusel -->
+                <div class="carousel-item active">
+                    <img src="{% static 'app/img/fondo.PNG' %}" class="d-block w-100" alt="Software" style="object-fit: contain; height: 450px;">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'app/img/fondo2.PNG' %}" class="d-block w-100" alt="PC" style="object-fit: contain; height: 450px;">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'app/img/fondo3.PNG' %}" class="d-block w-100" alt="Gaming PC" style="object-fit: contain; height: 350px;">
+                </div>
+            </div>
+
+            <!-- Controles para navegar por el carrusel -->
+            <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Siguiente</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="productosPC">
+    <div class="container mt-4">
+        <div class="mb-4 text-center">
+            <h2>PC de Escritorio</h2>
+            <div class="row">
+                {% for pc in pcs %}
+                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                    <div class="card text-center" style="width: 18rem;">
+                        <img src="{{ pc.imagen.url }}" class="card-img-top" alt="{{ pc.nombre }}" style="height: 200px; object-fit: contain;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ pc.nombre }}</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Procesador:</strong> {{ pc.procesador }}</li>
+                                <li><strong>Tarjeta Gráfica:</strong> {{ pc.tarjeta_grafica }}</li>
+                                <li><strong>Placa Base:</strong> {{ pc.placa_base }}</li>
+                                <li><strong>RAM:</strong> {{ pc.ram }}</li>
+                                <li><strong>Almacenamiento:</strong> {{ pc.almacenamiento }}</li>
+                            </ul>
+                            <p class="card-text">{{ pc.descripcion }}</p>
+                            <h3>${{ pc.precio }}</h3>
+                            <a href="#" class="btn btn-primary">Agregar al carrito</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="productosSoftware">
+    <div class="container mt-4">
+        <div class="mb-4 text-center">
+            <h2>Software</h2>
+        </div>
+        <div class="row">
+            {% for software in software %}
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <div class="card text-center" style="width: 18rem;">
+                    <img src="{{ software.imagen.url }}" class="card-img-top" alt="{{ software.nombre }}" style="height: 200px; object-fit: contain;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ software.nombre }}</h5>
+                        <p class="card-text">{{ software.descripcion }}</p>
+                        <h3>${{ software.precio }}</h3>
+                        <a href="#" class="btn btn-primary">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+        <!-- Agrega más tarjetas de productos de software en un futuro-->
+    </div>
+</div>
+</section>
+{% endblock %}
