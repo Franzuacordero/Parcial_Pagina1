@@ -17,11 +17,10 @@ class ContactanosForm(forms.ModelForm):
             'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Tu mensaje'}),
         }
 
-
 class PCForm(forms.ModelForm):
     nombre = forms.CharField(min_length=3, max_length=50)
     imagen = forms.ImageField(required=False, validators=[MaxSizeFileValidator(max_file_size=2)])
-    precio = forms.IntegerField( min_value=1, max_value=150000)
+    precio = forms.IntegerField(min_value=1, max_value=150000)
 
     class Meta:
         model = PC
@@ -41,11 +40,17 @@ class PCForm(forms.ModelForm):
 class SoftwareForm(forms.ModelForm):
     nombre = forms.CharField(min_length=3, max_length=50)
     imagen = forms.ImageField(required=False, validators=[MaxSizeFileValidator(max_file_size=2)])
-    precio = forms.IntegerField( min_value=1, max_value=150000)
+    precio = forms.IntegerField(min_value=1, max_value=150000)
+    
     class Meta:
         model = Software
         fields = ['nombre', 'descripcion', 'precio', 'imagen']
-
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del software'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción'}),
+            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)

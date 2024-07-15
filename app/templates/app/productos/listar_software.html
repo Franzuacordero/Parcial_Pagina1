@@ -1,21 +1,22 @@
 {% extends 'app/base.html' %}
 
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-    function eliminarSoftware(id){
-       Swal.fire({
-            title: "¿Estás seguro?",
-            text: "Esta acción no se puede deshacer",
-            icon: "question",
+    function eliminarSoftware(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'question',
             showCancelButton: true,
-            cancelButtonText: "No, Cancelar",
-            confirmButtonText: "Sí, eliminar",
-            confirmButtonColor: "darkred"
-       }).then(function(result){
-            if(result.isConfirmed){
-                window.location.href = "/eliminar-software/" + id + "/";
+            cancelButtonText: 'No, Cancelar',
+            confirmButtonText: 'Sí, eliminar',
+            confirmButtonColor: 'darkred'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                window.location.href = '/eliminar-software/' + id + '/';
             }
-       });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -68,9 +69,8 @@
                     <a href="{% url 'modificar_software' software_item.id %}" class="btn btn-info btn-sm">Modificar</a>
                     {% endif %}
                     {% if perms.app.delete_software %}
-                    <a href="#" onclick="eliminarSoftware({{ software_item.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="{% url 'eliminar_software' software_item.id %}" class="btn btn-danger btn-sm">Eliminar</a>
                     {% endif %}
-                    <button class="btn btn-success btn-sm btn-agregar-carrito" data-id="{{ software_item.id }}">Agregar al Carrito</button>
                 </td>
             </tr>
             {% empty %}

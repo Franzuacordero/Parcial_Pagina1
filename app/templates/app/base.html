@@ -10,9 +10,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
                 <img src="{% static 'app/img/goofyCat_upscaled.png' %}" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
                 <span>PC MarketPlace</span>
             </a>
@@ -24,37 +24,34 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Inicio</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Productos
+                    
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'VistaSoftware' %}">Software</a></li>
-                            <li><a class="dropdown-item" href="{% url 'VistaPC' %}">PC</a></li>
-                        </ul>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'productos' %}">Productos</a>
+                        </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contactanos' %}">Contactanos</a>
                     </li>
-                    {% if perms.app.view_pc %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'listar_pc' %}">Listado PC</a>
+                    {% if perms.app.view_pc or perms.app.add_pc %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="crudDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Gestión
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="crudDropdown">
+                            {% if perms.app.view_pc %}
+                            <li><a class="dropdown-item" href="{% url 'listar_pc' %}">Listado PC</a></li>
+                            {% endif %}
+                            {% if perms.app.add_pc %}
+                            <li><a class="dropdown-item" href="{% url 'agregar_PC' %}">Agregar PC</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'agregar_software' %}">Agregar software</a></li>
+                            <li><a class="dropdown-item" href="{% url 'listar_software' %}">Listar software</a></li>
+                        </ul>
                     </li>
                     {% endif %}
-                    {% if perms.app.add_pc %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'agregar_PC' %}">Agregar PC</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'agregar_software' %}">Agregar software</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'listar_software' %}">Listar software</a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
@@ -77,7 +74,7 @@
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'ver_carrito' %}">
-                            <i class="fas fa-shopping-cart" style="color: black;"></i>
+                            <i class="fas fa-shopping-cart" style="color: white;"></i>
                         </a>
                     </li>
                 </ul>
@@ -98,7 +95,7 @@
         {% endblock %}
     </div>
 
-    <footer class="footer bg-light text-center mt-5">
+    <footer class="footer bg-dark text-white text-center mt-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-5 mb-lg-0">
@@ -131,50 +128,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                Swal.fire({
-                    "title": "Felicitaciones",
-                    "text": "{{ message }}",
-                    "icon": "success"
-                });
-            </script>
-        {% endfor %}
-    {% endif %}
 
-    {% block js %}
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmPurchaseBtn = document.getElementById('confirmPurchaseBtn');
-        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    
-        confirmPurchaseBtn.addEventListener('click', function() {
-            confirmModal.hide();
-            Swal.fire('Compra realizada con éxito', '', 'success');
-    
-            // Realizar la solicitud POST para finalizar la compra
-            fetch('/finalizar-compra/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Redirigir a la página principal u otra página después de la compra
-                    window.location.href = "{% url 'index' %}";
-                } else {
-                    Swal.fire('Error al finalizar la compra', '', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error al finalizar la compra:', error);
-                Swal.fire('Error al finalizar la compra', '', 'error');
-            });
-        });
-    });
-    {% endblock %}
+
 </body>
 </html>

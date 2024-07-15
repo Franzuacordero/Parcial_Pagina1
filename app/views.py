@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import PC, Software, ItemCarrito, Carrito
+from .models import PC, Software, ItemCarrito, Carrito, ItemOrden , Orden
 from .forms import ContactanosForm, PCForm, SoftwareForm, CustomUserCreationForm
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.db import transaction
+from django.shortcuts import HttpResponse
+from django.contrib.contenttypes.models import ContentType
+import json
 
 # Create your views here.
 
@@ -16,21 +17,6 @@ def index(request):
     software = Software.objects.all()
     return render(request, 'app/index.html', {'pcs': pcs, 'software': software})
 
-def VistaPC(request):
-    pcs = PC.objects.all()
-    return render(request, 'app/VistaPC.html', {'pcs': pcs})
-
-def VistaSoftware(request):
-    software = Software.objects.all()
-    return render(request, 'app/VistaSoftware.html', {'software': software})
-
-def carrito(request):
-    # Aquí deberías obtener los items del carrito del usuario actual.
-    # Por simplicidad, obtendremos todos los PCs y software. 
-    # Modifica según tu lógica de carrito.
-    pcs = PC.objects.all()
-    software = Software.objects.all()
-    return render(request, 'app/carrito.html', {'pcs': pcs, 'software': software})
 
 def nosotros(request):
     return render(request, 'app/nosotros.html')
@@ -52,7 +38,8 @@ def contactanos(request):
     
 
 
-@permission_required('app.add_pc')
+@login_required
+@permission_required('app.add_pc', raise_exception=True)
 def agregar_PC(request):
     data = {}
     if request.method == 'POST':
@@ -60,28 +47,28 @@ def agregar_PC(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Producto Registrado")
-            # Limpiar el formulario para un nuevo ingreso
-            form = PCForm()
+            form = PCForm()  # Limpiar el formulario para un nuevo ingreso
     else:
         form = PCForm()
     
     return render(request, 'app/productos/agregar_PC.html', {'form': form, 'mensaje': data.get('mensaje', '')})
 
+@login_required
+@permission_required('app.add_software', raise_exception=True)
 def agregar_software(request):
     data = {}
     if request.method == 'POST':
         form = SoftwareForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            data["mensaje"] = "Producto guardado correctamente."
-            # Limpiar el formulario para un nuevo ingreso
-            form = SoftwareForm()
+            messages.success(request, "Producto Registrado")
+            form = SoftwareForm()  # Limpiar el formulario para un nuevo ingreso
     else:
         form = SoftwareForm()
     
     return render(request, 'app/productos/agregar_software.html', {'form': form, 'mensaje': data.get('mensaje', '')})
 
-
+@login_required
 @permission_required('app.view_pc')
 def Listar_PC(request):
     pcs = PC.objects.all()  # Obtener todos los objetos PC de la base de datos
@@ -93,41 +80,38 @@ def Listar_PC(request):
     return render(request, 'app/productos/listar_pc.html', context)
 
 
+@login_required
+@permission_required('app.view_software', raise_exception=True)
 def listar_software(request):
-    software_list = Software.objects.all()  # Obtener todos los objetos de Software de la base de datos
-
-    context = {
-        'software_list': software_list,  # Pasar 'software_list' como contexto a la plantilla
-    }
-
-    return render(request, 'app/productos/listar_software.html', context)
+    software_list = Software.objects.all()
+    return render(request, 'app/productos/listar_software.html', {'software_list': software_list})
 
 
 
 
-@permission_required('app.change_pc')
+@login_required
+@permission_required('app.change_pc', raise_exception=True)
 def modificar_PC(request, id):
     pc = get_object_or_404(PC, id=id)
     if request.method == 'POST':
-        form = PCForm(request.POST, request.FILES, instance=pc)  # Asegúrate de incluir request.FILES
+        form = PCForm(request.POST, request.FILES, instance=pc)
         if form.is_valid():
             form.save()
-            messages.success(request, "modificado correctamente")
+            messages.success(request, "Producto modificado correctamente")
             return redirect("listar_pc")
     else:
         form = PCForm(instance=pc)
 
-    context = {
-        'pc': pc,
-        'form': form,
-    }
+    context = {'form': form, 'pc': pc}
     return render(request, 'app/productos/modificar_pc.html', context)
-@permission_required('app.delete_pc')
+
+@login_required
+@permission_required('app.delete_pc', raise_exception=True)
 def eliminar_pc(request, id):
     pc = get_object_or_404(PC, id=id)
     pc.delete()
-    messages.success(request, "eliminado correctamente")
-    return redirect(to="listar_pc")
+    messages.success(request, "Producto eliminado correctamente")
+    return redirect("listar_pc")
 
 def registro(request):
     data = {
@@ -156,10 +140,16 @@ def agregar_al_carrito(request, producto_tipo, producto_id):
 
     if producto_tipo == 'pc':
         producto = get_object_or_404(PC, id=producto_id)
-        item, item_created = ItemCarrito.objects.get_or_create(carrito=carrito, producto_tipo='PC', producto_id=producto.id)
-    elif producto_tipo == 'Software':
+    elif producto_tipo == 'software':
         producto = get_object_or_404(Software, id=producto_id)
-        item, item_created = ItemCarrito.objects.get_or_create(carrito=carrito, producto_tipo='Software', producto_id=producto.id)
+    else:
+        return HttpResponse('Tipo de producto no válido', status=400)
+
+    item, item_created = ItemCarrito.objects.get_or_create(
+        carrito=carrito,
+        content_type=ContentType.objects.get_for_model(producto),
+        object_id=producto.id
+    )
 
     if not item_created:
         item.cantidad += 1
@@ -167,6 +157,7 @@ def agregar_al_carrito(request, producto_tipo, producto_id):
 
     messages.success(request, f'{producto.nombre} agregado al carrito.')
     return redirect('ver_carrito')
+
 
 @login_required
 def ver_carrito(request):
@@ -177,89 +168,105 @@ def ver_carrito(request):
     total = 0
 
     for item in items:
-        if item.producto_tipo == 'PC':
-            producto = get_object_or_404(PC, id=item.producto_id)
+        try:
+            # Obtener el modelo de producto basado en content_type
+            producto_model = item.content_type.model_class()
+
+            # Obtener el producto específico
+            producto = get_object_or_404(producto_model, id=item.object_id)
+
+            # Calcular subtotal del producto en el carrito
             subtotal = producto.precio * item.cantidad
-            items_list.append({
+
+            # Añadir detalles del producto al listado de items
+            item_details = {
+                'id': item.id,  # Agregar el ID del item para identificación en la plantilla
                 'nombre': producto.nombre,
                 'cantidad': item.cantidad,
                 'precio': producto.precio,
                 'subtotal': subtotal,
-                'pc': producto
-            })
-        elif item.producto_tipo == 'Software':
-            producto = get_object_or_404(Software, id=item.producto_id)
-            subtotal = producto.precio * item.cantidad
-            items_list.append({
-                'nombre': producto.nombre,
-                'cantidad': item.cantidad,
-                'precio': producto.precio,
-                'subtotal': subtotal,
-                'software': producto
-            })
-        total += subtotal
+            }
+
+            # Agregar el tipo específico de producto (PC o Software) al diccionario de detalles
+            if isinstance(producto, PC):
+                item_details['pc'] = producto
+            elif isinstance(producto, Software):
+                item_details['software'] = producto
+
+            items_list.append(item_details)
+            total += subtotal
+
+        except producto_model.DoesNotExist as e:
+            print(f"Error al recuperar producto: {e}")
+            continue
+        except Exception as e:
+            print(f"Error general: {e}")
+            continue
 
     context = {
         'items': items_list,
         'total': total,
     }
 
-    return render(request, 'app/ver_carrito.html', context)
+    return render(request, 'app/carrito/ver_carrito.html', context)
 
 
 
-@require_POST
 @login_required
-def eliminar_del_carrito(request, id):
-    try:
-        item = get_object_or_404(ItemCarrito, id=id)
-        item.delete()
-        return JsonResponse({'message': 'Producto eliminado correctamente del carrito'}, status=200)
-    except ItemCarrito.DoesNotExist:
-        return JsonResponse({'error': 'El producto no existe en el carrito'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+@require_POST
+def eliminar_producto(request):
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        try:
+            item = ItemCarrito.objects.get(id=item_id)
+            item.delete()
+            return JsonResponse({'message': 'Producto eliminado correctamente del carrito.'})
+        except ItemCarrito.DoesNotExist:
+            return JsonResponse({'error': 'El producto no existe en el carrito.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Método no permitido.'}, status=405)
 
 
+@login_required
+def limpiar_carrito(request):
+    # Obtener todos los ítems del carrito y eliminarlos
+    items_carrito = ItemCarrito.objects.all()
+    items_carrito.delete()
 
-
+    # Redirigir de vuelta a la página del carrito
+    return redirect('ver_carrito')
+    
+    
 @login_required
 def finalizar_compra(request):
-    try:
-        carrito = get_object_or_404(Carrito, usuario=request.user)
-        items = ItemCarrito.objects.filter(carrito=carrito)
+    if request.method == 'POST':
+        usuario = request.user
+        carrito = Carrito.objects.get(usuario=usuario)
+        items_carrito = ItemCarrito.objects.filter(carrito=carrito)
 
-        with transaction.atomic():
-            # Verificar y procesar cada item del carrito
-            for item in items:
-                if item.pc:
-                    # Verificar si hay suficiente stock para el PC
-                    if item.pc.stock < item.cantidad:
-                        messages.error(request, f'No hay suficiente stock para {item.pc.nombre}.')
-                        return redirect('ver_carrito')
+        if not items_carrito:
+            messages.warning(request, 'Tu carrito está vacío.')
+            return redirect('ver_carrito')
 
-                    # Reducir el stock del PC
-                    item.pc.stock -= item.cantidad
-                    item.pc.save()
+        total = sum(item.producto.precio * item.cantidad for item in items_carrito)
+        orden = Orden.objects.create(usuario=usuario, total=total)
 
-                elif item.software:
-                    # Verificar si hay suficiente stock para el software
-                    if item.software.stock < item.cantidad:
-                        messages.error(request, f'No hay suficiente stock para {item.software.nombre}.')
-                        return redirect('ver_carrito')
+        for item in items_carrito:
+            ItemOrden.objects.create(
+                orden=orden,
+                content_type=item.content_type,
+                object_id=item.object_id,
+                producto=item.producto,
+                cantidad=item.cantidad,
+                precio=item.producto.precio
+            )
 
-                    # Reducir el stock del software
-                    item.software.stock -= item.cantidad
-                    item.software.save()
-
-            # Eliminar todos los items del carrito después de procesar la compra
-            items.delete()
-
-        messages.success(request, 'Compra realizada con éxito.')
-        return redirect('index')
-
-    except Exception as e:
-        messages.error(request, f'Error al procesar la compra: {str(e)}')
+        items_carrito.delete()
+        messages.success(request, 'Compra finalizada con éxito.')
+        return redirect('ver_carrito')
+    else:
         return redirect('ver_carrito')
 
 
@@ -269,7 +276,7 @@ def finalizar_compra(request):
 def eliminar_software(request, id):
     software = get_object_or_404(Software, id=id)
     software.delete()
-    messages.success(request, "Software eliminado con éxito.")
+    messages.success(request, "Producto eliminado correctamente")
     return redirect('listar_software')
 
 @login_required
@@ -277,12 +284,45 @@ def eliminar_software(request, id):
 def modificar_software(request, id):
     software = get_object_or_404(Software, id=id)
     if request.method == 'POST':
-        form = SoftwareForm(request.POST, request.FILES, instance=software)  # Asegúrate de incluir request.FILES
+        form = SoftwareForm(request.POST, request.FILES, instance=software)
         if form.is_valid():
             form.save()
-            messages.success(request, '¡Software modificado correctamente!')
-            return redirect('listar_software')  # Redirigir a la lista de software o a otra vista
+            messages.success(request, "Producto modificado correctamente")
+            return redirect('listar_software')
     else:
         form = SoftwareForm(instance=software)
-    
-    return render(request, 'app/productos/modificar_software.html', {'form': form, 'software': software})
+
+    context = {'form': form, 'software': software}
+    return render(request, 'app/productos/modificar_software.html', context)
+
+
+def productos_view(request):  
+    tipo_producto = request.GET.get('tipo_producto', 'todos')
+
+    if tipo_producto == 'pc':
+        productos_pc = PC.objects.filter(visible_al_usuario=True)
+        productos_software = []
+    elif tipo_producto == 'software':
+        productos_pc = []
+        productos_software = Software.objects.filter(visible_al_usuario=True)
+    else:
+        productos_pc = PC.objects.filter(visible_al_usuario=True)
+        productos_software = Software.objects.filter(visible_al_usuario=True)
+
+    tipos_productos = {
+        'pc': 'PCs',
+        'software': 'Software'
+    }
+
+    return render(request, 'app/productos.html', {
+        'productos_pc': productos_pc,
+        'productos_software': productos_software,
+        'tipos_productos': tipos_productos,
+        'seleccionados': [tipo_producto]
+    })
+
+
+
+
+
+

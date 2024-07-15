@@ -26,7 +26,7 @@
 <div class="container">
     <h2>Listado de PCs</h2>
     <table class="table table-striped">
-        <thead>
+        <thead class="thead-dark">
             <tr>
                 <th>Nombre</th>
                 <th>Procesador</th>
@@ -54,10 +54,13 @@
                     {% if perms.app.change_pc %}
                     <a href="{% url 'modificar_pc' pc.id %}" class="btn btn-info btn-sm">Modificar</a>
                     {% endif %}
+                    
                     {% if perms.app.delete_pc %}
-                    <a href="#" onclick="eliminarPC({{ pc.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                    <form action="{% url 'eliminar_pc' pc.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro que deseas eliminar este PC?')">Eliminar</button>
+                    </form>
                     {% endif %}
-                    <a href="{% url 'agregar_al_carrito' 'pc' pc.id %}" class="btn btn-primary btn-sm">Agregar al Carrito</a>
                 </td>
             </tr>
             {% empty %}

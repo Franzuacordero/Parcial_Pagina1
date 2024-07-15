@@ -1,0 +1,99 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Mi Carrito{% endblock %}
+
+{% block css %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#confirmarCompraModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var modal = $(this)
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mi Carrito de Compras</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th>Acciones</th> <!-- Columna para botones de acciones -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.precio }}</td>
+                <td>${{ item.subtotal }}</td>
+                <td>
+                    <a href="{% url 'eliminar_producto' item.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No hay productos en el carrito.</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="text-right"><strong>Total</strong></td>
+                <td>${{ total }}</td> <!-- Mostrar el total del subtotal aquí -->
+                <td></td> <!-- Ajustar las columnas para mantener la estructura -->
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-right">
+        <a href="{% url 'limpiar_carrito' %}" class="btn btn-danger">Limpiar Carrito</a>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmarCompraModal">
+            Finalizar Compra
+        </button>
+    </div>
+</div>
+
+<!-- Modal de Confirmación de Compra -->
+<div class="modal fade" id="confirmarCompraModal" tabindex="-1" role="dialog" aria-labelledby="confirmarCompraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmarCompraModalLabel">Confirmar Compra</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Confirmar la compra de los siguientes productos:</p>
+                <ul>
+                    {% for item in items %}
+                    <li>{{ item.nombre }} - Cantidad: {{ item.cantidad }}</li>
+                    {% endfor %}
+                </ul>
+                <p>Total: ${{ total }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form method="post" action="{% url 'finalizar_compra' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Confirmar Compra</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -15,18 +15,18 @@ body {
 }
 
 .navbar-brand {
-    color: #000000; /* El color de la marca en la barra de navegación es blanco */
+    color: #ffffff; /* El color de la marca en la barra de navegación es negro */
 }
 
 /* Estilo para los enlaces de navegación */
 .navbar-nav .nav-link {
-    color: black; /* Cambia esto al color que prefieras */
+    color: rgb(255, 255, 255); /* Cambia esto al color que prefieras */
 }
 
 /* Estilo para el hover en los enlaces de navegación */
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-    color: black; /* Mantén el mismo color al pasar el mouse o al enfocar */
+    color: rgb(255, 255, 255); /* Mantén el mismo color al pasar el mouse o al enfocar */
 }
 
 /* Configuración para las tarjetas  */
@@ -35,37 +35,43 @@ body {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Añade una ligera sombra */
     border-radius: 10px; /* Aplica esquinas redondeadas */
     background-color: #1a1a1a; /* Fondo negro para las tarjetas */
-    margin-bottom: 30px; /* Añade un espacio debajo de cada tarjeta */
+    margin-bottom: 10px; /* Añade un espacio debajo de cada tarjeta */
+    height: 100%; /* Establece la altura de la tarjeta */
+    display: flex;
+    flex-direction: column;
 }
 
 .card-body {
     color: white !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 20px 20px 0px 0px;
+}
+
 .card-body ul {
     padding-left: 0;
 }
-.card-body p {
-    color: white !important;
-}
-.card-body ul li {
-    color: white !important;
-}
 
-.card-title {
-    color: white; /* Cambia 'white' al color deseado */
-}
-
+.card-body p,
+.card-body ul li,
+.card-title,
 .card-text {
-    color: white; /* Cambia 'white' al color deseado */
+    color: white !important; /* Cambia el color del texto a blanco */
 }
 
-/* Opcional: Cambiar el color del texto del precio */
-.card-body h3 {
-    color: white; /* Cambia a tu color deseado */
-}
+.card-body h3,
 .card-body h5 {
-    color: white !important;
+    color: white !important; /* Cambia a tu color deseado */
 }
+
 /* Estilo para los botones de la tarjeta */
 .card-btn {
     background-color: #007bff; /* Color azul para el fondo del botón */
@@ -89,7 +95,7 @@ body {
 /* Estilo para los encabezados en el pie de página */
 .footer h4 {
     font-size: 18px; /* Tamaño de la fuente para los encabezados */
-    color: #333; /* Establece el color del texto de los encabezados como oscuro */
+    color: #ffffff; /* Establece el color del texto de los encabezados como blanco */
 }
 
 /* Configuración para listas en el pie de página */
@@ -105,7 +111,7 @@ body {
 
 /* Estilo para los enlaces en el pie de página */
 .footer ul li a {
-    color: #333; /* Establece el color de los enlaces como oscuro */
+    color: #ffffff; /* Establece el color de los enlaces como blanco */
     transition: color 0.3s; /* Añade una transición suave para el cambio de color al hacer hover */
 }
 
@@ -117,7 +123,7 @@ body {
 /* Estilo para el texto general en el pie de página */
 .footer p {
     font-size: 16px; /* Tamaño de la fuente para el texto general */
-    color: #333; /* Establece el color como oscuro */
+    color: #ffffff; /* Establece el color como blanco */
 }
 
 /* Configuración para un mapa incrustado */
@@ -135,6 +141,7 @@ body {
     margin: 0 auto; /* Centra la sección horizontalmente */
     width: 600px; /* Establece el ancho del contenedor */
 }
+
 /* Estilo para el fondo del modal */
 .modal-content {
     background-color: #fff;
@@ -158,7 +165,7 @@ body {
     opacity: 0.7;
 }
 
-.close:hovser {
+.close:hover {
     opacity: 1;
 }
 
@@ -188,4 +195,31 @@ body {
     margin: auto; /* Centra el formulario horizontalmente */
     padding: 20px; /* Añade relleno para espacio adicional */
     border: 1px solid #ccc; /* Opcional: agrega un borde para delimitar el formulario */
+}
+
+/* Ajuste adicional para asegurar que las tarjetas tengan una altura mínima consistente */
+.card {
+    min-height: 400px; /* Establece una altura mínima para las tarjetas */
+}
+
+.product {
+    margin-bottom: 30px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa; /* Color de fondo alternativo para filas impares */
+}
+
+.table-striped tbody tr:hover {
+    background-color: #e9ecef; /* Color de fondo al pasar el ratón sobre la fila */
+}
+
+.table-striped th,
+.table-striped td {
+    vertical-align: middle; /* Alineación vertical centrada para celdas */
+}
+
+.btn-sm {
+    font-size: 12px; /* Tamaño de fuente más pequeño para botones pequeños */
+    margin-right: 5px; /* Margen derecho entre botones */
 }
